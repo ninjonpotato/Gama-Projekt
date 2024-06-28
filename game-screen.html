@@ -1,7 +1,49 @@
 <html>
     <head>
+        <style>
+        #karakter {
+            background-color: red;
+            width: 50px;
+            height: 50px;
+          
+            position: absolute;
+
+        }
+        </style>
+
         </head>
         <body>
-            <p> Ez a jatek lecgooo</p>
+            <div id="karakter"></div>
         </body>
+        <script>
+            let up = false;
+            let down = false;
+            let left = false;
+            let right = false;
+            let mvs = 4;
+            let player = document.getElementById("karakter");
+            let speed= 0.1;
+            let x =100
+            let y = 0;
+            let momentumx = 0;
+
+            player.style.top = y
+            player.style.left = x
+            this.document.addEventListener("keydown", function(e) {
+                if(e.key == "w") {up = true; }
+               if(e.key == "s") {down = true;}
+               if(e.key == "a") {left = true;}
+               if(e.key == "d") {right = true;}
+            });
+            this.document.addEventListener("keyup", function(e) {
+                if(e.key == "w") {up = false;}
+               if(e.key == "s") {down = false;}
+               if(e.key == "a") {left = false; }
+               if(e.key == "d") {right = false; }
+            });
+
+         
+        
+            
+            </script>
  </html>
