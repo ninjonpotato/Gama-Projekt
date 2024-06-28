@@ -16,34 +16,56 @@
             <div id="karakter"></div>
         </body>
         <script>
-            let up = false;
-            let down = false;
-            let left = false;
-            let right = false;
-            let mvs = 4;
+          
+            let irany = {
+            up:false,
+            down:false,
+            left:false,
+            right:false
+            }
+          
             let player = document.getElementById("karakter");
-            let speed= 0.1;
+            let speed= 0.70;
+             let stop= 0.90;
+            let maxspeed = 4;
             let x =100
             let y = 0;
-            let momentumx = 0;
+            let speedX = 0
+            let speedY = 0
 
             player.style.top = y
             player.style.left = x
             this.document.addEventListener("keydown", function(e) {
-                if(e.key == "w") {up = true; }
-               if(e.key == "s") {down = true;}
-               if(e.key == "a") {left = true;}
-               if(e.key == "d") {right = true;}
+                if(e.key == "w") {irany.up = true; }
+               if(e.key == "s") {irany.down = true;}
+               if(e.key == "a") {irany.left = true;}
+               if(e.key == "d") {irany.right = true;}
             });
             this.document.addEventListener("keyup", function(e) {
-                if(e.key == "w") {up = false;}
-               if(e.key == "s") {down = false;}
-               if(e.key == "a") {left = false; }
-               if(e.key == "d") {right = false; }
+                if(e.key == "w") {irany.up = false;}
+               if(e.key == "s") {irany.down = false;}
+               if(e.key == "a") {irany.left = false; }
+               if(e.key == "d") {irany.right = false; }
             });
+            mozgas()
+            function mozgas() {
+
+                    setInterval(function(){
+                    if(irany.right)  speedX = Math.min(speedX + speed, maxspeed);
+                    if(irany.left)  speedX = Math.max(speedX - speed, -maxspeed);
+                    if(irany.up)  speedY = Math.max(speedY - speed, -maxspeed);
+                    if(irany.down)  speedY = Math.min(speedY + speed, maxspeed);
+                    if(!irany.right && !irany.left) speedX *= stop;
+                    if(!irany.up && !irany.down) speedY *= stop
+                    x += speedX;
+                    y+= speedY
+                    player.style.left = x;
+                    player.style.top = y;
+                    }, 10) 
+            }
 
          
-        
+          
             
             </script>
  </html>
