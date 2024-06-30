@@ -66,17 +66,14 @@ class Karakter {
 
     talalat(enemy) {
 
-        
-
         let hitboxKord = {
-            x1:this.x-25,
-            y1:this.y-50,
-            x2:this.x+this.hitbox.width+20,
-            y2:this.y-this.hitbox.height,
-            height: this.hitbox.height,
-            width: this.hitbox.width
+            balF:new Csucs(this.x-25,this.y-50),
+            jobbF: new Csucs(this.x+this.hitbox.width+20,this.y-50),
+            balL: new Csucs(this.x-25,this.y),
+            jobbL: new Csucs(this.x+this.hitbox.width+20,this.y)
         }
-        console.log(hitboxKord.x2 + "," + hitboxKord.y2)
+        console.log("player: "+this.x+","+this.y)
+        console.log(hitboxKord.jobbL.x,hitboxKord.jobbL.y)
     }
 
     hitbox_lekovetes() {
@@ -91,3 +88,11 @@ class Karakter {
 
 }
   
+class Csucs {
+    x= 0
+    y= 0
+    constructor(x,y) {
+        this.x = x
+        this.y = y
+    }
+}
