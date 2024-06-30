@@ -9,63 +9,63 @@
             position: absolute;
 
         }
+        
         </style>
 
         </head>
         <body>
             <div id="karakter"></div>
         </body>
+        <script src="Karakter.js"></script>
+        <script src="Gonosz.js"></script>
+        <script src="Hitbox.js"></script>
         <script>
-          
-            let irany = {
-            up:false,
-            down:false,
-            left:false,
-            right:false
-            }
-          
-            let player = document.getElementById("karakter");
-            let speed= 0.70;
-             let stop= 0.90;
-            let maxspeed = 4;
-            let x =100
-            let y = 0;
-            let speedX = 0
-            let speedY = 0
 
-            player.style.top = y
-            player.style.left = x
+          
+            let enemyk = [];
+
+            enemyk.push(new Gonosz(200,200,110))
+            enemyk.push(new Gonosz(310,310,110))
+            console.log(enemyk[0].hp)
+
+            let player = new Karakter(document.getElementById("karakter"),100,100)
+          
+
             this.document.addEventListener("keydown", function(e) {
-                if(e.key == "w") {irany.up = true; }
-               if(e.key == "s") {irany.down = true;}
-               if(e.key == "a") {irany.left = true;}
-               if(e.key == "d") {irany.right = true;}
+                if(e.key == "w") {player.irany.up = true; }
+               if(e.key == "s") {player.irany.down = true;}
+               if(e.key == "a") {player.irany.left = true;}
+               if(e.key == "d") {player.irany.right = true;  }
+               if(e.key == "f") {
+             }
             });
             this.document.addEventListener("keyup", function(e) {
-                if(e.key == "w") {irany.up = false;}
-               if(e.key == "s") {irany.down = false;}
-               if(e.key == "a") {irany.left = false; }
-               if(e.key == "d") {irany.right = false; }
-            });
-            mozgas()
-            function mozgas() {
-
-                    setInterval(function(){
-                    if(irany.right)  speedX = Math.min(speedX + speed, maxspeed);
-                    if(irany.left)  speedX = Math.max(speedX - speed, -maxspeed);
-                    if(irany.up)  speedY = Math.max(speedY - speed, -maxspeed);
-                    if(irany.down)  speedY = Math.min(speedY + speed, maxspeed);
-                    if(!irany.right && !irany.left) speedX *= stop;
-                    if(!irany.up && !irany.down) speedY *= stop
-                    x += speedX;
-                    y+= speedY
-                    player.style.left = x;
-                    player.style.top = y;
-                    }, 10) 
-            }
-
-         
+                if(e.key == "w") {player.irany.up = false;}
+               if(e.key == "s") {player.irany.down = false;}
+               if(e.key == "a") {player.irany.left = false; }
+               if(e.key == "d") {player.irany.right = false; }
           
+            });
+
+            this.document.addEventListener("mousemove", function(e) {
+                player.eger.x = e.x;
+                player.eger.y = e.y;
+                player.hitbox_lekovetes()
+                
+            })
+            this.document.addEventListener("click",function(e) {
+                player.utes();
+            })
+
+
+            setInterval(function() {player.mozgas()},10)
+            
+           
+           
+
+           
+           
+           
             
             </script>
  </html>
