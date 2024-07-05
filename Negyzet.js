@@ -37,16 +37,16 @@ class Negyzet {
     constructor(x1,y1,width,height) {
        
         this.width = width;
-        this.height = height
+        this.height =height
         this.x1=x1;
         this.y1=y1;
         this.x2 = x1+width
         this.y2 = y1
         this.x3 = x1+width
-        this.y3 =y1+height
+        this.y3 = y1+height
         this.x4 = x1
         this.y4 = y1+height
-
+            //x1,y1,x2,y2
         this.AB = new Vektor(this.x1,this.y1,this.x2,this.y2)
         this.BD = new Vektor(this.x2,this.y2,this.x3,this.y3)
         this.CD = new Vektor(this.x3,this.y3,this.x4,this.y4)
@@ -81,13 +81,6 @@ class Negyzet {
 }
 
 
-
-//todo: lekérdezni hogy összeérnek e.
-//1. Vektorok: megvan
-//2. Vektorok normalizálása és normáljaik előálítása : megvan
-//3. Skaláris kiszámolása
-//4. vetítés: az adott obj minden oldalát egy felületre vetítem.
-//5. a vetítésekből megkeresni a minimumot és maximumot majd eldönteni hogy összeérnek-e
 var c = document.getElementById("screen");
 var vaszon = c.getContext("2d");
 
@@ -96,26 +89,43 @@ let A = new Negyzet(100,100,50,50)
 A.rajzol(vaszon)
 
 
+
 document.addEventListener("click", function(e) {
     vaszon.clearRect(0,0,800,800);
     A.rajzol(vaszon)
 
     let B = new Negyzet(e.clientX-25,e.clientY-25,50,50)
     B.rajzol(vaszon)
-    console.log("--")
-    console.log("CUCC")
-    console.log("B AB: "+ skalar(B.AB,A.AB))
-    console.log("B BD: "+skalar(B.BD,A.AB))
-    console.log("B CD: "+ skalar(B.CD,A.AB))
-    console.log("B AC: "+skalar(B.AC,A.AB))
     console.log("-")
-    console.log("B AB: "+ skalar(A.AB,A.AB))
-    console.log("B BD: "+skalar(A.BD,A.AB))
-    console.log("B CD: "+ skalar(A.CD,A.AB))
-    console.log("B AC: "+skalar(A.AC,A.AB))
+    collision(A,B)
 
  })
 
-function skalar(A,B) { //2 vektor
-return A.x1 * B.a + A.y1 * B.b
+
+ function skalar(VektorA,VektorB) { 
+    return VektorA.x1 * VektorB.a + VektorA.y1 * VektorB.b
+    }
+
+function vetites(Obj,oldal) {
+let min = skalar(Obj.oldalak[0],oldal);
+let max = min; 
+
+for(let i = 0; i < Obj.oldalak.length; i++) {
+    if (min > skalar(Obj.oldalak[i],oldal)) min = skalar(Obj.oldalak[i],oldal);
+    if (max < skalar(Obj.oldalak[i],oldal)) max = skalar(Obj.oldalak[i],oldal);
+}
+
+return {min: min, max: max}
+}
+
+
+
+function collision(A,B) { // 2 objektum
+    for(let i = 0; i < A.oldalak.length; i++) {
+        let objektA = vetites(A,B.oldalak[i])
+        let objektB = vetites(B,B.oldalak[i])
+        if(!(objektA.min >= objektB.min && objektA.min <= objektB.max || objektA.max >= objektB.min && objektA.max <= objektB.max)) {    console.log("nincs osszeeres");return false}
+    }
+    console.log("uristen osszeertek")
+return true;
 }
