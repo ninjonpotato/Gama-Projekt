@@ -10,5 +10,19 @@
         </canvas>
         <script src="Negyzet.js">
         </script>
+        <script src="Jatek.js">
+        </script>
+        <script>
+            
+
+            let player = new Negyzet(250,253,50,50) //létrehozzuk a jatekost
+            let Objektek = [player] //Az onjektekbe rakjuk.
+            let A = new Negyzet(300,300,50,50)
+            Objektek.push(A)
+            var jatek = new Jatek(document.getElementById("screen"),Objektek);
+            jatek.game();
+            player.egerKovetes(jatek)
+
+        </script>
         </body>
     </html>

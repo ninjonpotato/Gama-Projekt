@@ -75,122 +75,112 @@ class Negyzet {
         return [this.AB,this.BD,this.CD,this.AC]
     }
 
-    rajzol(vaszon) {
+   static rajzol(vaszon,Objekt) {
             vaszon.beginPath()
-            vaszon.moveTo(this.x1, this.y1);
-            vaszon.lineTo(this.x2, this.y2);
+            vaszon.moveTo(Objekt.x1, Objekt.y1);
+            vaszon.lineTo(Objekt.x2, Objekt.y2);
 
-            vaszon.moveTo(this.x2, this.y2);
-            vaszon.lineTo(this.x3, this.y3);
+            vaszon.moveTo(Objekt.x2, Objekt.y2);
+            vaszon.lineTo(Objekt.x3, Objekt.y3);
 
-            vaszon.moveTo(this.x3, this.y3);
-            vaszon.lineTo(this.x4, this.y4);
+            vaszon.moveTo(Objekt.x3, Objekt.y3);
+            vaszon.lineTo(Objekt.x4, Objekt.y4);
 
-            vaszon.moveTo(this.x4, this.y4);
-            vaszon.lineTo(this.x1, this.y1);
+            vaszon.moveTo(Objekt.x4, Objekt.y4);
+            vaszon.lineTo(Objekt.x1, Objekt.y1);
 
-            vaszon.moveTo(this.x1, this.y1);
-            vaszon.lineTo(this.x2, this.y2);
+            vaszon.moveTo(Objekt.x1, Objekt.y1);
+            vaszon.lineTo(Objekt.x2, Objekt.y2);
 
             vaszon.stroke()
 
     }
 
+    egerKovetes(jatek) {
+        let cX = this.center_x
+        let cY = this.center_y
+        document.addEventListener("mousemove",function(e){ //egérmozgásra fordítja a karaktert
+            jatek.vaszon.clearRect(0,0,1920,1080)
+            let y = e.clientY-jatek.offsetY -cY
+            let x = e.clientX-jatek.offsetX- cX
+            let angle = Math.atan2(y,x) * (180 / Math.PI)
+            Negyzet.elforgat(jatek.objektek[0],angle)
+            jatek.game() //kirajzoljuk az objektumokat
+            Negyzet.elforgat(jatek.objektek[0],angle*-1)
+           
+           
+           
+        })
+    }
+    static skalar(VektorA,VektorB) { 
+        return VektorA.x1 * VektorB.a + VektorA.y1 * VektorB.b
+        }
 
+    static vetites(Obj,oldal) {
+        let min = Negyzet.skalar(Obj.oldalak[0],oldal);
+        let max = min; 
+            
+            for(let i = 0; i < Obj.oldalak.length; i++) {
+                if (min > Negyzet.skalar(Obj.oldalak[i],oldal)) min = Negyzet.skalar(Obj.oldalak[i],oldal);
+                if (max < Negyzet.skalar(Obj.oldalak[i],oldal)) max = Negyzet.skalar(Obj.oldalak[i],oldal);
+            }
+            
+            return {min: min, max: max}
+        }
+        static collision(A,B) { // 2 objektum
+            for(let i = 0; i < A.oldalak.length; i++) {
+                let objektA = Negyzet.vetites(A,B.oldalak[i])
+                let objektB = Negyzet.vetites(B,B.oldalak[i])
+                if(!(objektA.min >= objektB.min && objektA.min <= objektB.max || objektA.max >= objektB.min && objektA.max <= objektB.max)) {return false}
+            }
+            console.log("osszeertek")
+        return true;
+        }
+
+        static elforgat(Objekt,szog) { //elforgatjuk a négyzetet és updateljük az adatait
+            let rad = (Math.PI/180)*szog
+                        let tmpX = [Objekt.x1,Objekt.x2,Objekt.x3,Objekt.x4]
+                        let tmpY = [Objekt.y1,Objekt.y2,Objekt.y3,Objekt.y4]
+                   
+            
+                    for(let i = 0; i < tmpX.length; i++) { //P''
+                       
+                        let x = (tmpX[i]-Objekt.center_x) * Math.cos(rad) - (tmpY[i]-Objekt.center_y) * Math.sin(rad)
+                        let y = (tmpX[i]-Objekt.center_x) * Math.sin(rad) + (tmpY[i]-Objekt.center_y) * Math.cos(rad)
+                        tmpX[i] = x;
+                        tmpY[i] = y
+                        
+                    }
+            
+                    Objekt.x1= tmpX[0] + Objekt.center_x;
+                    Objekt.x2= tmpX[1]+ Objekt.center_x;
+                    Objekt.x3= tmpX[2]+ Objekt.center_x;
+                    Objekt.x4= tmpX[3]+ Objekt.center_x;
+            
+                    Objekt.y1= tmpY[0] + Objekt.center_y;
+                    Objekt.y2= tmpY[1]  + Objekt.center_y;
+                    Objekt.y3= tmpY[2]  + Objekt.center_y;
+                    Objekt.y4= tmpY[3] + Objekt.center_y;
+                    Objekt.AB = new Vektor(Objekt.x1, Objekt.y1, Objekt.x2, Objekt.y2) //AB
+                    Objekt.BD= new Vektor(Objekt.x2, Objekt.y2, Objekt.x3, Objekt.y3) //BD
+                    Objekt.CD= new Vektor(Objekt.x3, Objekt.y3, Objekt.x4, Objekt.y4) //CD
+                    Objekt.AC= new Vektor(Objekt.x4, Objekt.y4, Objekt.x1, Objekt.y1) //AC
+            
+            
+            }
+            
 }
 
 
-var c = document.getElementById("screen");
-var vaszon = c.getContext("2d");
 
-
-let A = new Negyzet(100,100,50,50)
-var BB=c.getBoundingClientRect();
-var offsetX=BB.left;
-var offsetY=BB.top;
-A.rajzol(vaszon)
-let Objektek = [A]
-document.addEventListener("mousemove",function(e){
-    vaszon.clearRect(0,0,1920,1080)
-    A.rajzol(vaszon)
-    let angle = Math.atan2(e.clientY-offsetY - Objektek[0].center_y,e.clientX-offsetX- Objektek[0].center_x ) * (180 / Math.PI)
-    elforgat(Objektek[0],angle)
-    Objektek[0].rajzol(vaszon)
-    collision(A,Objektek[0])
-    elforgat(Objektek[0],angle*-1)
-    
-   
-})
-    
+    /* ez majd jó lesz map készitéskor
 document.addEventListener("click",function(e) {
     vaszon.clearRect(0,0,1920,1080)
-    let B = new Negyzet(e.clientX-offsetX,e.clientY-offsetY,50,50)
+   
     Objektek[0] = B
     A.rajzol(vaszon)
     Objektek[0].rajzol(vaszon)
 
 })
-  
+  */
 
-    
-
-
- function skalar(VektorA,VektorB) { 
-    return VektorA.x1 * VektorB.a + VektorA.y1 * VektorB.b
-    }
-
-function vetites(Obj,oldal) {
-let min = skalar(Obj.oldalak[0],oldal);
-let max = min; 
-
-for(let i = 0; i < Obj.oldalak.length; i++) {
-    if (min > skalar(Obj.oldalak[i],oldal)) min = skalar(Obj.oldalak[i],oldal);
-    if (max < skalar(Obj.oldalak[i],oldal)) max = skalar(Obj.oldalak[i],oldal);
-}
-
-return {min: min, max: max}
-}
-
-
-
-function collision(A,B) { // 2 objektum
-    for(let i = 0; i < A.oldalak.length; i++) {
-        let objektA = vetites(A,B.oldalak[i])
-        let objektB = vetites(B,B.oldalak[i])
-        if(!(objektA.min >= objektB.min && objektA.min <= objektB.max || objektA.max >= objektB.min && objektA.max <= objektB.max)) {    console.log("nincs osszeeres");return false}
-    }
-    console.log("uristen osszeertek")
-return true;
-}
-
-function elforgat(Objekt,szog) {
-let rad = (Math.PI/180)*szog
-            let tmpX = [Objekt.x1,Objekt.x2,Objekt.x3,Objekt.x4]
-            let tmpY = [Objekt.y1,Objekt.y2,Objekt.y3,Objekt.y4]
-       
-
-        for(let i = 0; i < tmpX.length; i++) { //P''
-           
-            let x = (tmpX[i]-Objekt.center_x) * Math.cos(rad) - (tmpY[i]-Objekt.center_y) * Math.sin(rad)
-            let y = (tmpX[i]-Objekt.center_x) * Math.sin(rad) + (tmpY[i]-Objekt.center_y) * Math.cos(rad)
-            tmpX[i] = x;
-            tmpY[i] = y
-            
-        }
-
-        Objekt.x1= tmpX[0] + Objekt.center_x;
-        Objekt.x2= tmpX[1]+ Objekt.center_x;
-        Objekt.x3= tmpX[2]+ Objekt.center_x;
-        Objekt.x4= tmpX[3]+ Objekt.center_x;
-
-        Objekt.y1= tmpY[0] + Objekt.center_y;
-        Objekt.y2= tmpY[1]  + Objekt.center_y;
-        Objekt.y3= tmpY[2]  + Objekt.center_y;
-        Objekt.y4= tmpY[3] + Objekt.center_y;
-        Objekt.AB = new Vektor(Objekt.x1, Objekt.y1, Objekt.x2, Objekt.y2) //AB
-        Objekt.BD= new Vektor(Objekt.x2, Objekt.y2, Objekt.x3, Objekt.y3) //BD
-        Objekt.CD= new Vektor(Objekt.x3, Objekt.y3, Objekt.x4, Objekt.y4) //CD
-        Objekt.AC= new Vektor(Objekt.x4, Objekt.y4, Objekt.x1, Objekt.y1) //AC
-
-
-}
